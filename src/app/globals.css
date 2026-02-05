@@ -771,9 +771,15 @@ body {
         overflow-y: auto;
     }
 
+    .site-title {
+        margin: 30px 0 20px 0;
+        letter-spacing: 2px;
+        font-size: 1.1rem;
+    }
+
     .container {
         padding: 20px 10px;
-        padding-bottom: 50px;
+        padding-bottom: 20px;
         min-height: 100vh;
         justify-content: flex-start;
         gap: 30px;
@@ -887,5 +893,9 @@ body {
 
     .stats {
         padding: 30px 20px;
+    }
+
+    .footer {
+        padding: 20px 0 10px;
     }
 }
