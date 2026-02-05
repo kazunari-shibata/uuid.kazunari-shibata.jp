@@ -110,8 +110,8 @@ begin
     perform cron.unschedule(jobname) from cron.job where jobname in ('system-uuid-gen', 'display-cleanup');
 exception when others then end $$;
 
--- 2秒おきに生成、10分おきに掃除
-select cron.schedule('system-uuid-gen', '2 seconds', 'select generate_system_uuid()');
+-- 5秒おきに生成、10分おきに掃除
+select cron.schedule('system-uuid-gen', '5 seconds', 'select generate_system_uuid()');
 select cron.schedule('display-cleanup', '*/10 * * * *', 'select cleanup_display_uuids()');
 
 
