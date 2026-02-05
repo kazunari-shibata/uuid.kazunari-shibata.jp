@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NHLCM5JPX4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-NHLCM5JPX4');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time UUID Generator</title>
+    <meta name="description"
+        content="Experience the flow of unique identifiers globally. Generate and track UUIDs in real-time with zero collisions.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="responsive.css">
+    <script>
+        (function () {
+            const theme = localStorage.getItem('uuid-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        })();
+    </script>
+</head>
+
+<body>
+    <main class="container">
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Dark Mode">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
+        <div class="content-wrapper">
+            <h3 class="section-title">Statistics</h3>
+            <div class="stats">
+                <div class="stat-item">
+                    <label>Total Generated</label>
+                    <span id="total-count">0</span>
+                </div>
+                <div class="stat-item">
+                    <label>Collisions</label>
+                    <span id="collision-count">0</span>
+                </div>
+                <div class="stat-item">
+                    <label>Collision Probability</label>
+                    <span id="probability">0%</span>
+                </div>
+            </div>
+        </div>
+        <div class="content-wrapper">
+            <h3 class="section-title">Your UUID</h3>
+            <div class="main-card">
+                <div id="result-container" class="result-area">
+                    <span class="uuid-text">Generating...</span>
+                </div>
+                <div class="actions">
+                    <button id="copy-btn" class="action-btn" title="Copy UUID">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        Copy
+                    </button>
+                    <button id="regen-btn" class="action-btn" title="Generate New UUID">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                        Regenerate
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="content-wrapper">
+            <h3 class="section-title">Live Stream</h3>
+            <section class="live-stream">
+                <div id="stream-container" class="stream-container">
+                    <!-- Live items will appear here -->
+                </div>
+            </section>
+        </div>
+
+        <section id="feedback-card" class="feedback-card">
+            <div id="feedback-question">
+                <p>Did you have a unique and good day today?</p>
+                <div class="feedback-buttons">
+                    <button id="btn-yes" class="feedback-btn yes">Yes</button>
+                    <button id="btn-no" class="feedback-btn no">No</button>
+                </div>
+            </div>
+            <div id="feedback-response" class="hidden">
+                <!-- Response will appear here -->
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>&copy; 2026 <a href="https://www.kazunari-shibata.jp/" target="_blank">Kazunari Shibata</a></p>
+        </footer>
+    </main>
+
+    <div id="toast" class="toast">Copied to clipboard</div>
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

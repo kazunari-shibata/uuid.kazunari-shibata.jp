@@ -1,0 +1,530 @@
+:root {
+    /* Base Variables */
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --text-secondary: #888;
+    --text-tertiary: #bbb;
+
+    --card-bg: #ffffff;
+    --card-border: #f0f0f0;
+    --card-shadow: rgba(0, 0, 0, 0.05);
+
+    --button-border: #eee;
+    --button-hover: #f9f9f9;
+    --button-active-border: #ddd;
+
+    --stats-bg: #fcfcfc;
+    /* Actually transparent in current design, but keeping variable */
+    --stats-border: #eee;
+
+    --stream-id-color: #ddd;
+    --stream-time-color: #bbb;
+    --stream-text-color: #666;
+    --stream-border: #f0f0f0;
+
+    --feedback-bg: #ffffff;
+    --feedback-border: #eee;
+
+    --toast-bg: #333333;
+    --toast-text: #ffffff;
+}
+
+[data-theme="dark"] {
+    --bg-color: #111111;
+    --text-color: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --text-tertiary: #666;
+
+    --card-bg: #1a1a1a;
+    --card-border: #333;
+    --card-shadow: rgba(0, 0, 0, 0.5);
+
+    --button-border: #333;
+    --button-hover: #2a2a2a;
+    --button-active-border: #444;
+
+    --stats-bg: #1a1a1a;
+    --stats-border: #333;
+
+    --stream-id-color: #444;
+    --stream-time-color: #666;
+    --stream-text-color: #aaa;
+    --stream-border: #333;
+
+    --feedback-bg: #1f1f1f;
+    --feedback-border: #333;
+
+    --toast-bg: #f0f0f0;
+    --toast-text: #111111;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-family: monospace;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px 0;
+}
+
+.container {
+    text-align: center;
+    width: 100%;
+    max-width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    box-sizing: border-box;
+}
+
+.content-wrapper {
+    max-width: 680px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.section-title {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 0 15px 0;
+    text-align: left;
+    border-bottom: 1px solid var(--stream-border);
+    padding-bottom: 5px;
+}
+
+.content-wrapper .section-title {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 0;
+}
+
+.action-btn {
+    background: none;
+    border: 1px solid var(--button-border);
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.action-btn:hover {
+    background: var(--button-hover);
+    color: var(--text-color);
+    border-color: var(--button-active-border);
+}
+
+.action-btn svg {
+    opacity: 0.7;
+}
+
+.result-area {
+    padding: 0;
+}
+
+.main-card {
+    background: transparent;
+    padding: 40px 60px;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+    padding: 40px 60px;
+    border: 1px solid var(--stats-border);
+    border-radius: 12px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+}
+
+.stat-item label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-item>span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.stat-item span sup {
+    font-size: 0.7em;
+    vertical-align: super;
+    margin-left: 2px;
+}
+
+.uuid-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: all;
+    transition: opacity 0.2s;
+}
+
+.uuid-text:hover {
+    opacity: 0.7;
+}
+
+.live-stream {
+    margin-top: 0;
+    text-align: left;
+    max-width: 680px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    background: transparent;
+    padding: 40px 60px;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    box-sizing: border-box;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.stream-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    height: 400px;
+    overflow-y: hidden;
+    position: relative;
+    /* Adjust mask for dark mode if needed, but transparent works for both */
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+
+.stream-item {
+    font-size: 0.85rem;
+    color: var(--stream-text-color);
+    display: flex;
+    justify-content: space-between;
+    animation: slideIn 0.4s ease-out;
+    padding: 4px 0;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stream-info {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.stream-id {
+    color: var(--stream-id-color);
+    font-size: 0.8rem;
+    min-width: 45px;
+}
+
+[data-theme="dark"] .stream-id {
+    color: #444;
+    /* Darker ID for dark mode */
+}
+
+.stream-time {
+    color: var(--stream-time-color);
+    font-size: 0.85rem;
+    min-width: 60px;
+}
+
+.stream-uuid {
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.stream-uuid:hover {
+    opacity: 0.7;
+}
+
+.stream-user {
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+}
+
+.feedback-card {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 20px;
+    background: var(--feedback-bg);
+    border: 1px solid var(--feedback-border);
+    border-radius: 12px;
+    width: 240px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    /* Could variable-ize shadow too */
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.feedback-card p {
+    font-size: 0.95rem;
+    color: var(--stream-text-color);
+    margin-bottom: 20px;
+}
+
+.gift-container {
+    padding: 12px;
+    background: var(--button-hover);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    text-align: left;
+}
+
+.gift-title {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.gift-uuid {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    padding: 4px 0;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.gift-uuid:hover {
+    color: var(--text-color);
+}
+
+.feedback-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.feedback-btn {
+    padding: 8px 25px;
+    border-radius: 20px;
+    border: 1px solid var(--button-border);
+    background: var(--feedback-bg);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--stream-text-color);
+    transition: all 0.2s;
+}
+
+.feedback-btn:hover {
+    background: var(--button-hover);
+    border-color: var(--button-active-border);
+    color: var(--text-color);
+}
+
+/* Specific colors for Yes/No can stay or be adjusted */
+.feedback-btn.yes:hover {
+    background: #f0fff4;
+    border-color: #c6f6d5;
+    color: #2f855a;
+}
+
+[data-theme="dark"] .feedback-btn.yes:hover {
+    background: #064e3b;
+    border-color: #047857;
+    color: #a7f3d0;
+}
+
+.feedback-btn.no:hover {
+    background: #fff5f5;
+    border-color: #fed7d7;
+    color: #c53030;
+}
+
+[data-theme="dark"] .feedback-btn.no:hover {
+    background: #7f1d1d;
+    border-color: #991b1b;
+    color: #fecaca;
+}
+
+.hidden {
+    display: none;
+}
+
+#feedback-response {
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.coffee-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #FFDD00;
+    color: #000000;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 15px;
+}
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--toast-bg);
+    color: var(--toast-text);
+    padding: 10px 20px;
+    border-radius: 4px;
+    transition: transform 0.3s;
+    font-family: sans-serif;
+    font-size: 0.9rem;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+.mobile-only {
+    display: none;
+}
+
+.desktop-only {
+    display: inline;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle:hover {
+    background: var(--button-hover);
+    color: var(--text-color);
+}
+
+.spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-top-color: var(--text-color);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+[data-theme="dark"] .spinner {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.footer {
+    padding: 20px 0 40px;
+    opacity: 0.4;
+}
+
+.footer p {
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.footer a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+}
+
+.footer a:hover {
+    border-bottom-color: var(--text-tertiary);
+}
