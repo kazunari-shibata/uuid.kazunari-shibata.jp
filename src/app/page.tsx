@@ -204,7 +204,7 @@ export default function Home() {
       // Avoid duplicate
       if (prev.some(p => p.uuid === item.uuid)) return prev;
       const newStream = [item, ...prev].sort((a, b) => (b.id || 0) - (a.id || 0));
-      return newStream.slice(0, 50);
+      return newStream.slice(0, 1000);
     });
   };
 

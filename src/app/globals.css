@@ -243,11 +243,16 @@ body {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    height: 400px;
-    overflow-y: hidden;
+    height: auto;
+    overflow-y: visible;
     position: relative;
-    /* Adjust mask for dark mode if needed, but transparent works for both */
-    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    /* Maintain mask at the bottom of the content */
+    mask-image: linear-gradient(to bottom, black 98%, transparent 100%);
+}
+
+.stream-container::-webkit-scrollbar {
+    display: none;
+    /* Hide scrollbar for Chrome/Safari */
 }
 
 .stream-item {
