@@ -355,7 +355,7 @@ export default function Home() {
             className={`result-area ${highlight ? 'highlight' : ''}`}
             onClick={() => currentUUID && copyToClipboard(currentUUID)}
           >
-            <span className="uuid-text" title="Click to copy">{currentUUID || '••••••••-••••-••••-••••-••••••••••••'}</span>
+            <span className="uuid-text" title="Click to copy">{currentUUID || 'Generating...'}</span>
           </div>
           <div className="actions">
             <button id="copy-btn" className="action-btn" title={bulkUUIDs.length > 0 ? "Copy All UUIDs" : "Copy UUID"} onClick={() => bulkUUIDs.length > 0 ? copyBulkToClipboard() : copyToClipboard(currentUUID)}>

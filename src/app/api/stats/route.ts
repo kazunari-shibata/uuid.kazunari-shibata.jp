@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 
+export const revalidate = 1; // Cache for 1 second, revalidate in background
+
 export async function GET() {
     const supabaseAdmin = getSupabaseAdmin();
     try {
