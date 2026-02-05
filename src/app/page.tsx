@@ -29,6 +29,11 @@ export default function Home() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [showToast, setShowToast] = useState(false);
   const [highlight, setHighlight] = useState(false);
+  const [bulkCount, setBulkCount] = useState(10);
+  const [bulkUUIDs, setBulkUUIDs] = useState<string[]>([]);
+  const [isBulkLoading, setIsBulkLoading] = useState(false);
+  const [showBulkMenu, setShowBulkMenu] = useState(false);
+  const bulkRef = useRef<HTMLDivElement>(null);
 
   const streamRef = useRef<UUIDItem[]>([]);
   streamRef.current = stream;
@@ -48,6 +53,17 @@ export default function Home() {
     if (initialTheme === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
     }
+  }, []);
+
+  // Close bulk menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (bulkRef.current && !bulkRef.current.contains(event.target as Node)) {
+        setShowBulkMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   // Fetch initial data
@@ -187,6 +203,32 @@ export default function Home() {
     }
   };
 
+  const handleBulkGenerate = async () => {
+    const count = Math.min(100, Math.max(1, bulkCount));
+    setIsBulkLoading(true);
+    try {
+      const res = await fetch('/api/bulk-generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ clientId, count })
+      });
+      const data = await res.json();
+      if (data.uuids) {
+        setBulkUUIDs(data.uuids);
+        fetchStats();
+      }
+    } catch (err) {
+      console.error('Bulk generation failed:', err);
+    } finally {
+      setIsBulkLoading(false);
+    }
+  };
+
+  const copyBulkToClipboard = () => {
+    if (bulkUUIDs.length === 0) return;
+    copyToClipboard(bulkUUIDs.join('\n'));
+  };
+
   const resetFeedback = () => {
     setFeedbackState('question');
     setGiftUUIDs([]);
@@ -233,6 +275,8 @@ export default function Home() {
           </svg>
         )}
       </button>
+
+      <h1 className="site-title">UUID Generator</h1>
 
       <div className="content-wrapper">
         <h3 className="section-title">Statistics</h3>
@@ -285,6 +329,52 @@ export default function Home() {
               </svg>
               Regenerate
             </button>
+            <div className="bulk-inline-container" ref={bulkRef}>
+              <div className="bulk-input-group">
+                <input
+                  type="number"
+                  min="1"
+                  max="100"
+                  value={bulkCount}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
+                    if (isNaN(val)) setBulkCount(1);
+                    else setBulkCount(Math.min(100, Math.max(1, val)));
+                  }}
+                  className="count-input-inline"
+                  title="Bulk Amount (Max 100)"
+                  placeholder="100"
+                />
+                <button
+                  className="action-btn bulk-btn"
+                  onClick={handleBulkGenerate}
+                  disabled={isBulkLoading}
+                >
+                  {isBulkLoading ? 'Generating...' : 'Bulk Generate'}
+                </button>
+              </div>
+
+              {bulkUUIDs.length > 0 && (
+                <div className="bulk-popover">
+                  <div className="popover-header">Generated {bulkUUIDs.length} UUIDs</div>
+                  <div className="popover-content">
+                    <div className="popover-results">
+                      <div className="popover-actions">
+                        <button className="action-btn xs" onClick={copyBulkToClipboard}>Copy All</button>
+                        <button className="action-btn xs" onClick={() => setBulkUUIDs([])}>Clear</button>
+                      </div>
+                      <div className="popover-list">
+                        {bulkUUIDs.map((uuid, i) => (
+                          <div key={i} className="popover-item" onClick={() => copyToClipboard(uuid)}>
+                            {uuid}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

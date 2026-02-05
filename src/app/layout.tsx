@@ -16,7 +16,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Real-time UUID Generator",
+  title: "UUID Generator",
   description: "Experience the flow of unique identifiers globally. Generate and track UUIDs in real-time with zero collisions.",
 };
 

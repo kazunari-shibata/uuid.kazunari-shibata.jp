@@ -95,6 +95,14 @@ body {
     flex-direction: column;
 }
 
+.site-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 20px 0 10px 0;
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.5px;
+}
+
 .section-title {
     font-size: 0.75rem;
     font-weight: 400;
@@ -489,6 +497,172 @@ body {
     transform: translateX(-50%) translateY(0);
 }
 
+/* Bulk Generation Styles - Inline & Popover */
+.bulk-inline-container {
+    position: relative;
+    display: inline-flex;
+}
+
+.bulk-input-group {
+    display: flex;
+    background: transparent;
+    border: 1px solid var(--button-border);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+.bulk-input-group:focus-within {
+    border-color: var(--text-secondary);
+}
+
+.count-input-inline {
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--button-border);
+    color: var(--text-color);
+    padding: 4px 6px;
+    width: 40px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    outline: none;
+    text-align: center;
+}
+
+/* Hide number input spinners */
+.count-input-inline::-webkit-inner-spin-button,
+.count-input-inline::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.action-btn.bulk-btn {
+    border: none;
+    border-radius: 0;
+    padding: 4px 10px;
+}
+
+.bulk-popover-container {
+    position: relative;
+    display: inline-block;
+}
+
+.bulk-toggle.active {
+    background: var(--button-hover);
+    border-color: var(--text-secondary);
+    color: var(--text-color);
+}
+
+.bulk-popover {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    right: 0;
+    width: 280px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    animation: fadeInScale 0.2s ease-out;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.popover-header {
+    padding: 10px 12px;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.popover-content {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.popover-input-row {
+    display: flex;
+    gap: 8px;
+}
+
+.count-input-small {
+    background: transparent;
+    border: 1px solid var(--button-border);
+    color: var(--text-color);
+    padding: 4px 8px;
+    border-radius: 4px;
+    width: 60px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    outline: none;
+}
+
+.popover-results {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.popover-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.action-btn.xs {
+    padding: 1px 6px;
+    font-size: 0.65rem;
+}
+
+.popover-list {
+    max-height: 150px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.popover-item {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    background: var(--button-hover);
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.popover-item:hover {
+    background: var(--button-active-border);
+    color: var(--text-color);
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+.action-btn.primary {
+    background: var(--text-color);
+    color: var(--bg-color);
+    border: none;
+}
+
 .mobile-only {
     display: none;
 }
@@ -562,7 +736,9 @@ body {
 
 .footer a:hover {
     border-bottom-color: var(--text-tertiary);
-}@media (max-width: 600px) {
+}
+
+@media (max-width: 600px) {
 
     body,
     html {
