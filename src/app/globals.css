@@ -156,6 +156,20 @@ body {
     padding: 0;
 }
 
+.uuid-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: all;
+    transition: opacity 0.2s;
+}
+
+.uuid-text:hover {
+    opacity: 0.7;
+}
+
 .main-card {
     background: transparent;
     padding: 40px 60px;
@@ -205,20 +219,6 @@ body {
     font-size: 0.7em;
     vertical-align: super;
     margin-left: 2px;
-}
-
-.uuid-text {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    user-select: all;
-    transition: opacity 0.2s;
-}
-
-.uuid-text:hover {
-    opacity: 0.7;
 }
 
 .live-stream {

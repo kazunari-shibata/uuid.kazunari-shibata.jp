@@ -147,6 +147,7 @@ export default function Home() {
       const data = await res.json();
 
       if (isUserAction) {
+        setBulkUUIDs([]);
         setCurrentUUID(data.uuid);
         if (data.data) {
           addToStream({ ...data.data, label: isGift ? "Gift" : "You" });
@@ -213,9 +214,11 @@ export default function Home() {
         body: JSON.stringify({ clientId, count })
       });
       const data = await res.json();
-      if (data.uuids) {
+      if (data.uuids && data.uuids.length > 0) {
         setBulkUUIDs(data.uuids);
-        copyToClipboard(data.uuids.join('\n'));
+        setCurrentUUID(data.uuids[data.uuids.length - 1]);
+        setHighlight(true);
+        setTimeout(() => setHighlight(false), 300);
         fetchStats();
       }
     } catch (err) {
@@ -315,12 +318,12 @@ export default function Home() {
             <span className="uuid-text" title="Click to copy">{currentUUID}</span>
           </div>
           <div className="actions">
-            <button id="copy-btn" className="action-btn" title="Copy UUID" onClick={() => copyToClipboard(currentUUID)}>
+            <button id="copy-btn" className="action-btn" title={bulkUUIDs.length > 0 ? "Copy All UUIDs" : "Copy UUID"} onClick={() => bulkUUIDs.length > 0 ? copyBulkToClipboard() : copyToClipboard(currentUUID)}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
               </svg>
-              Copy
+              {bulkUUIDs.length > 0 ? 'Copy All' : 'Copy'}
             </button>
             <button id="regen-btn" className="action-btn" title="Generate New UUID" onClick={() => generateUUID(true)}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
