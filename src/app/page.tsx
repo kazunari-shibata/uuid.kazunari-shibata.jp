@@ -55,9 +55,9 @@ export default function Home() {
     if (!clientId) return;
 
     const init = async () => {
-      await fetchStats();
       await fetchHistory();
       await generateUUID(true);
+      await fetchStats();
     };
 
     init();
@@ -69,17 +69,19 @@ export default function Home() {
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'generated_uuids' },
         (payload) => {
+          fetchStats(); // Update stats for every new insertion
           const newItem = payload.new as UUIDItem;
           // Avoid duplicate (especially for "You")
           if (streamRef.current.some(item => item.uuid === newItem.uuid)) return;
 
           let label = "Other User";
-          if (newItem.client_id === clientId) {
+          if (newItem.client_id === 'SYSTEM_GENERATOR') {
+            label = "System";
+          } else if (newItem.client_id === clientId) {
             label = newItem.is_gift ? "Gift" : "You";
           }
 
           addToStream({ ...newItem, label });
-          fetchStats(); // Update stats
         }
       )
       .subscribe();
@@ -104,24 +106,27 @@ export default function Home() {
     try {
       const res = await fetch('/api/history');
       const data: UUIDItem[] = await res.json();
-      const labeledData = data.map(item => ({
-        ...item,
-        label: item.client_id === clientId ? (item.is_gift ? "Gift" : "You") : "Other User"
-      }));
-      // We want to set them in order, but addToStream prepends, so we reverse it.
-      // Or just set the whole stream at once.
+      const labeledData = data.map(item => {
+        let label = "Other User";
+        if (item.client_id === 'SYSTEM_GENERATOR') {
+          label = "System";
+        } else if (item.client_id === clientId) {
+          label = item.is_gift ? "Gift" : "You";
+        }
+        return { ...item, label };
+      });
       setStream(labeledData);
     } catch (err) {
       console.error('Failed to fetch history:', err);
     }
   };
 
-  const generateUUID = async (isUserAction = false, isGift = false) => {
+  const generateUUID = async (isUserAction = false, isGift = false, overrideClientId?: string) => {
     try {
       const res = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ clientId, isGift })
+        body: JSON.stringify({ clientId: overrideClientId || clientId, isGift })
       });
       const data = await res.json();
 
@@ -306,7 +311,13 @@ export default function Home() {
         </section>
       </div>
 
-      <section id="feedback-card" className="feedback-card">
+      <section id="feedback-card" className={`feedback-card ${feedbackState === 'hidden' ? 'hidden' : ''}`}>
+        <button className="close-btn" aria-label="Close" onClick={() => setFeedbackState('hidden')}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
         {feedbackState === 'question' && (
           <div id="feedback-question">
             <p>Did you have a unique and good day today?</p>
@@ -320,11 +331,10 @@ export default function Home() {
         {feedbackState === 'yes' && (
           <div id="feedback-response">
             <p style={{ marginBottom: '15px' }}>
-              That's wonderful! If you enjoy this site, we'd appreciate it if you could buy us a coffee to help keep the server and database running.
+              That&apos;s wonderful! If you enjoy this site, we&apos;d appreciate it if you could buy us a coffee to help keep the server and database running.
             </p>
-            <a href="https://buymeacoffee.com/kazunari" target="_blank" className="coffee-btn" style={{ marginTop: 0 }}>
-              <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a coffee" width="20" />
-              <span>Buy me a coffee</span>
+            <a href="https://buymeacoffee.com/kazunari" target="_blank" className="coffee-btn-new">
+              <img src="/bmc-button.png" alt="Buy me a coffee" style={{ width: '100%', maxWidth: '140px', height: 'auto' }} />
             </a>
             <button id="start-fresh-yes" className="feedback-btn" style={{ display: 'block', margin: '15px auto 0', width: 'auto' }} onClick={resetFeedback}>Start Fresh</button>
           </div>
@@ -338,7 +348,7 @@ export default function Home() {
             {giftUUIDs.length === 0 ? (
               <div id="gift-section" style={{ marginTop: '15px', padding: '15px', background: 'var(--button-hover)', borderRadius: '8px', opacity: 0.9 }}>
                 <p id="gift-message" style={{ fontSize: '0.9rem', marginBottom: '8px' }}>
-                  We'll send you a small gift.
+                  We&apos;ll send you a small gift.
                 </p>
                 <button
                   id="btn-receive-gift"
