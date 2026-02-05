@@ -11,7 +11,7 @@ export async function GET() {
             .select('id, uuid, created_at, client_id, is_gift')
             .order('created_at', { ascending: false })
             .order('id', { ascending: false })
-            .limit(1000);
+            .limit(100);
 
         if (error) throw error;
         return NextResponse.json(data);

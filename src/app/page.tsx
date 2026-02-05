@@ -33,6 +33,7 @@ export default function Home() {
   const [bulkCount, setBulkCount] = useState(10);
   const [bulkUUIDs, setBulkUUIDs] = useState<string[]>([]);
   const [isBulkLoading, setIsBulkLoading] = useState(false);
+  const [isHistoryLoading, setIsHistoryLoading] = useState(true);
   const [showBulkMenu, setShowBulkMenu] = useState(false);
   const bulkRef = useRef<HTMLDivElement>(null);
 
@@ -143,6 +144,7 @@ export default function Home() {
   };
 
   const fetchHistory = async () => {
+    setIsHistoryLoading(true);
     try {
       const res = await fetch('/api/history');
       const data: UUIDItem[] = await res.json();
@@ -158,6 +160,8 @@ export default function Home() {
       setStream(labeledData);
     } catch (err) {
       console.error('Failed to fetch history:', err);
+    } finally {
+      setIsHistoryLoading(false);
     }
   };
 
@@ -204,7 +208,7 @@ export default function Home() {
       // Avoid duplicate
       if (prev.some(p => p.uuid === item.uuid)) return prev;
       const newStream = [item, ...prev].sort((a, b) => (b.id || 0) - (a.id || 0));
-      return newStream.slice(0, 1000);
+      return newStream.slice(0, 100);
     });
   };
 
@@ -406,20 +410,27 @@ export default function Home() {
         <h3 className="section-title">Live Stream</h3>
         <section className="live-stream">
           <div id="stream-container" className="stream-container">
-            {stream.map((item) => (
-              <div className="stream-item" key={item.id || item.uuid}>
-                <div className="stream-info">
-                  <span className="stream-id">#{item.id || '...'}</span>
-                  <span className="stream-time">
-                    {new Date(item.created_at || new Date()).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-                  </span>
-                  <span className="stream-uuid" title="Click to copy" onClick={() => copyToClipboard(item.uuid)}>
-                    {item.uuid}
-                  </span>
-                </div>
-                <span className="stream-user">{item.label}</span>
+            {isHistoryLoading ? (
+              <div className="stream-loader">
+                <span className="spinner"></span>
+                <span className="loading-text">Loading history...</span>
               </div>
-            ))}
+            ) : (
+              stream.map((item) => (
+                <div className="stream-item" key={item.id || item.uuid}>
+                  <div className="stream-info">
+                    <span className="stream-id">#{item.id || '...'}</span>
+                    <span className="stream-time">
+                      {new Date(item.created_at || new Date()).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                    </span>
+                    <span className="stream-uuid" title="Click to copy" onClick={() => copyToClipboard(item.uuid)}>
+                      {item.uuid}
+                    </span>
+                  </div>
+                  <span className="stream-user">{item.label}</span>
+                </div>
+              ))
+            )}
           </div>
         </section>
       </div>
