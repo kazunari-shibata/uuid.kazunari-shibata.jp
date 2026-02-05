@@ -8,6 +8,22 @@ export async function POST(req: Request) {
         const { clientId, isGift } = await req.json();
         const newUUID = uuidv4();
 
+        // 1. Try to insert into archive first (Collision Detection)
+        const { error: archiveError } = await supabaseAdmin
+            .from('uuid_archive')
+            .insert([{ uuid: newUUID }]);
+
+        if (archiveError) {
+            // Collision detected in archive (even if deleted from main table)
+            if (archiveError.code === '23505') {
+                // Increment collisions counter
+                await supabaseAdmin.rpc('increment_collision_counter');
+                return NextResponse.json({ error: 'Collision detected', uuid: newUUID }, { status: 409 });
+            }
+            throw archiveError;
+        }
+
+        // 2. Insert into display table
         const { data, error } = await supabaseAdmin
             .from('generated_uuids')
             .insert([
@@ -19,13 +35,7 @@ export async function POST(req: Request) {
             ])
             .select();
 
-        if (error) {
-            if (error.code === '23505') {
-                await supabaseAdmin.rpc('increment_collision_counter');
-                return NextResponse.json({ error: 'Collision detected', uuid: newUUID }, { status: 409 });
-            }
-            throw error;
-        }
+        if (error) throw error;
 
         return NextResponse.json({ uuid: newUUID, data: data[0] });
     } catch (err) {
