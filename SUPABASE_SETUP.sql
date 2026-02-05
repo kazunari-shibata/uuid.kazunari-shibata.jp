@@ -94,7 +94,7 @@ begin
   delete from public.generated_uuids 
   where id not in (
     select id from public.generated_uuids 
-    order by created_at desc 
+    order by created_at desc, id desc 
     limit 1000
   );
   

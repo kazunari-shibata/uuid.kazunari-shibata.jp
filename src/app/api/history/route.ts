@@ -10,6 +10,7 @@ export async function GET() {
             .from('generated_uuids')
             .select('id, uuid, created_at, client_id, is_gift')
             .order('created_at', { ascending: false })
+            .order('id', { ascending: false })
             .limit(50);
 
         if (error) throw error;
