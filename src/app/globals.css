@@ -527,4 +527,130 @@ body {
 
 .footer a:hover {
     border-bottom-color: var(--text-tertiary);
+}@media (max-width: 600px) {
+
+    body,
+    html {
+        height: auto;
+        display: block;
+        overflow-y: auto;
+    }
+
+    .container {
+        padding: 20px 10px;
+        padding-bottom: 50px;
+        min-height: 100vh;
+        justify-content: flex-start;
+        gap: 30px;
+    }
+
+    .main-card {
+        padding: 30px 20px;
+        margin-bottom: 0;
+    }
+
+    .uuid-text {
+        white-space: normal;
+        word-break: break-all;
+        font-size: 1.5rem;
+    }
+
+    .stats {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 5px;
+        padding: 15px 5px;
+        margin-bottom: 0;
+    }
+
+    .live-stream {
+        margin-top: 0;
+    }
+
+    .stat-item {
+        text-align: center;
+        flex: 1;
+        width: auto;
+        padding: 0;
+        border: none;
+    }
+
+    .stat-item:nth-child(1),
+    .stat-item:nth-child(2),
+    .stat-item:nth-child(3) {
+        width: auto;
+        padding-top: 0;
+        border-top: none;
+    }
+
+    .stat-item>span {
+        word-break: break-all;
+        display: block;
+        width: 100%;
+        font-size: 0.9rem;
+        /* Slightly smaller for mobile row */
+    }
+
+    .desktop-only {
+        display: none;
+    }
+
+    .mobile-only {
+        display: inline;
+    }
+
+    .feedback-card {
+        width: 220px;
+        padding: 15px;
+        bottom: 15px;
+        right: 15px;
+    }
+
+    .feedback-card p {
+        font-size: 0.85rem;
+    }
+
+    .stream-item {
+        align-items: center;
+    }
+
+    .stream-uuid {
+        word-break: break-all;
+        font-size: 0.8rem;
+    }
+
+    .stream-user {
+        text-align: right;
+        min-width: 60px;
+        line-height: 1.2;
+    }
+
+    .toast {
+        bottom: auto;
+        top: 20px;
+        transform: translateX(-50%) translateY(-100px);
+        z-index: 2000;
+    }
+
+    .toast.show {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    .theme-toggle {
+        top: 10px;
+        right: 10px;
+        padding: 6px;
+    }
+
+    .live-stream {
+        padding: 30px 20px;
+    }
+
+    .content-wrapper:first-of-type {
+        margin-top: 25px;
+    }
+
+    .stats {
+        padding: 30px 20px;
+    }
 }
