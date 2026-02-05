@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 
-export const revalidate = 1; // Cache for 1 second, revalidate in background
+export const dynamic = 'force-dynamic'; // Always fetch the latest stats from DB
 
 export async function GET() {
     const supabaseAdmin = getSupabaseAdmin();
