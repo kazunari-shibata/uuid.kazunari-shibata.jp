@@ -33,15 +33,18 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={`${outfit.variable} ${jetbrainsMono.variable}`}>
       <head>
-        <Script
-          id="theme-setter"
-          strategy="beforeInteractive"
+        <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
                   const theme = localStorage.getItem('uuid-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-                  if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+                  if (theme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    document.documentElement.style.colorScheme = 'dark';
+                  } else {
+                    document.documentElement.style.colorScheme = 'light';
+                  }
                 } catch (e) {}
               })();
             `,

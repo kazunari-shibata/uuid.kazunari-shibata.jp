@@ -5,8 +5,8 @@ import { v4 as uuidv4 } from 'uuid';
 export async function POST(req: Request) {
     const supabaseAdmin = getSupabaseAdmin();
     try {
-        const { clientId, isGift } = await req.json();
-        const newUUID = uuidv4();
+        const { clientId, isGift, providedUuid } = await req.json();
+        const newUUID = providedUuid || uuidv4();
 
         // 1. Try to insert into archive first (Collision Detection)
         const { error: archiveError } = await supabaseAdmin

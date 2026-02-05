@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
+import { v4 as uuidv4 } from 'uuid';
 
 interface UUIDItem {
   id: number;
@@ -21,7 +22,7 @@ export default function Home() {
   const [totalGenerated, setTotalGenerated] = useState(0);
   const [collisionCount, setCollisionCount] = useState(0);
   const [stream, setStream] = useState<UUIDItem[]>([]);
-  const [currentUUID, setCurrentUUID] = useState<string>('Generating...');
+  const [currentUUID, setCurrentUUID] = useState<string>('');
   const [clientId, setClientId] = useState<string>('');
   const [isGiftLoading, setIsGiftLoading] = useState(false);
   const [giftUUIDs, setGiftUUIDs] = useState<string[]>([]);
@@ -52,6 +53,20 @@ export default function Home() {
     setTheme(initialTheme);
     if (initialTheme === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.style.colorScheme = 'dark';
+    }
+
+    // Initialize first UUID on client side only to avoid 0000... flicker
+    setCurrentUUID(uuidv4());
+
+    // Restore stats from cache
+    const cachedStats = localStorage.getItem('uuid-stats-cache');
+    if (cachedStats) {
+      try {
+        const parsed = JSON.parse(cachedStats);
+        setTotalGenerated(parsed.total_generated || 0);
+        setCollisionCount(parsed.collisions || 0);
+      } catch (e) { }
     }
   }, []);
 
@@ -72,7 +87,12 @@ export default function Home() {
 
     const init = async () => {
       await fetchHistory();
-      await generateUUID(true);
+      // Sync the current UUID (it will have been set by the useEffect above)
+      if (currentUUID) {
+        await generateUUID(false, false, undefined, currentUUID);
+      } else {
+        await generateUUID(true);
+      }
       await fetchStats();
     };
 
@@ -113,6 +133,10 @@ export default function Home() {
       const data: Stats = await res.json();
       setTotalGenerated(data.total_generated);
       setCollisionCount(data.collisions);
+      localStorage.setItem('uuid-stats-cache', JSON.stringify({
+        total_generated: data.total_generated,
+        collisions: data.collisions
+      }));
     } catch (err) {
       console.error('Failed to fetch stats:', err);
     }
@@ -137,23 +161,37 @@ export default function Home() {
     }
   };
 
-  const generateUUID = async (isUserAction = false, isGift = false, overrideClientId?: string) => {
+  const generateUUID = async (isUserAction = false, isGift = false, overrideClientId?: string, providedUuid?: string) => {
+    let localUUID: string | null = providedUuid || null;
+
+    if (isUserAction && !localUUID) {
+      localUUID = uuidv4();
+      setBulkUUIDs([]);
+      setCurrentUUID(localUUID);
+      setHighlight(true);
+      setTimeout(() => setHighlight(false), 300);
+    }
+
     try {
       const res = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ clientId: overrideClientId || clientId, isGift })
+        body: JSON.stringify({
+          clientId: overrideClientId || clientId,
+          isGift,
+          providedUuid: localUUID
+        })
       });
       const data = await res.json();
 
       if (isUserAction) {
-        setBulkUUIDs([]);
-        setCurrentUUID(data.uuid);
+        // If server returned something else (unlikely with providedUuid), sync it
+        if (data.uuid && data.uuid !== localUUID) {
+          setCurrentUUID(data.uuid);
+        }
         if (data.data) {
           addToStream({ ...data.data, label: isGift ? "Gift" : "You" });
         }
-        setHighlight(true);
-        setTimeout(() => setHighlight(false), 300);
       }
       return data;
     } catch (err) {
@@ -185,8 +223,10 @@ export default function Home() {
     setTheme(newTheme);
     if (newTheme === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.style.colorScheme = 'dark';
     } else {
       document.documentElement.removeAttribute('data-theme');
+      document.documentElement.style.colorScheme = 'light';
     }
     localStorage.setItem('uuid-theme', newTheme);
   };
@@ -313,9 +353,9 @@ export default function Home() {
           <div
             id="result-container"
             className={`result-area ${highlight ? 'highlight' : ''}`}
-            onClick={() => currentUUID !== 'Generating...' && copyToClipboard(currentUUID)}
+            onClick={() => currentUUID && copyToClipboard(currentUUID)}
           >
-            <span className="uuid-text" title="Click to copy">{currentUUID}</span>
+            <span className="uuid-text" title="Click to copy">{currentUUID || '••••••••-••••-••••-••••-••••••••••••'}</span>
           </div>
           <div className="actions">
             <button id="copy-btn" className="action-btn" title={bulkUUIDs.length > 0 ? "Copy All UUIDs" : "Copy UUID"} onClick={() => bulkUUIDs.length > 0 ? copyBulkToClipboard() : copyToClipboard(currentUUID)}>
