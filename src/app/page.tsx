@@ -215,6 +215,7 @@ export default function Home() {
       const data = await res.json();
       if (data.uuids) {
         setBulkUUIDs(data.uuids);
+        copyToClipboard(data.uuids.join('\n'));
         fetchStats();
       }
     } catch (err) {
@@ -353,27 +354,6 @@ export default function Home() {
                   {isBulkLoading ? 'Generating...' : 'Bulk Generate'}
                 </button>
               </div>
-
-              {bulkUUIDs.length > 0 && (
-                <div className="bulk-popover">
-                  <div className="popover-header">Generated {bulkUUIDs.length} UUIDs</div>
-                  <div className="popover-content">
-                    <div className="popover-results">
-                      <div className="popover-actions">
-                        <button className="action-btn xs" onClick={copyBulkToClipboard}>Copy All</button>
-                        <button className="action-btn xs" onClick={() => setBulkUUIDs([])}>Clear</button>
-                      </div>
-                      <div className="popover-list">
-                        {bulkUUIDs.map((uuid, i) => (
-                          <div key={i} className="popover-item" onClick={() => copyToClipboard(uuid)}>
-                            {uuid}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
